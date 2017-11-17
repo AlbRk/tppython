@@ -106,12 +106,6 @@ class ClusterAvailabilityCheck(threading.Thread):
                     if self.server_id == status['id'] :
                         #logging.info("From Myself = %s", status['id'])
                         None
-                    # else :
-                    #     if self.otherserverstatus.__sizeof__()<=int(status['ordinal']):
-                    #         self.otherserverstatus.insert(status['ordinal'], [status['ordinal'], status['timestamp_epoch']])
-                    #     else:
-                    #         self.otherserverstatus.remove(int(status['ordinal']))
-                    #         self.otherserverstatus.insert(int(status['ordinal']),[status['ordinal'],status['timestamp_epoch']])
                     self.otherserverstatus[status['ordinal']]=status['timestamp_epoch']
                     print(str(self.otherserverstatus))
                     logging.info("Server ID = %s Ordinal = %d on cluster", status['id'], status['ordinal'])
@@ -135,8 +129,11 @@ class ClusterAvailabilityCheck(threading.Thread):
             if(timestamp+2*self.presence_interval<time.time()):
                 print(str(ordinal)+" EST MORT CHEFFFFFF")
                 del self.otherserverstatus[ordinal]
-                self.elect_new_master()
+                del self.servers[ordinal]
+                self.am_i_new_master()
 
-    def elect_new_master(self):
-        #todo
-        print("available soon")
+    def am_i_new_master(self):
+        if self.is_master():
+            print("I am the new master")
+        else:
+            print("I am still a slave")
