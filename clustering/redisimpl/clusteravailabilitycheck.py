@@ -131,8 +131,12 @@ class ClusterAvailabilityCheck(threading.Thread):
         #    logging.info("%s", item)
 
     def check_if_nobody_dies(self):
-        i=0
-        for timestamp in self.otherserverstatus.values():
+        for ordinal,timestamp in self.otherserverstatus.items():
             if(timestamp+2*self.presence_interval<time.time()):
-                print(str(i)+" EST MORT CHEFFFFFF")
-            i=i+1
+                print(str(ordinal)+" EST MORT CHEFFFFFF")
+                del self.otherserverstatus[ordinal]
+                self.elect_new_master()
+
+    def elect_new_master(self):
+        #todo
+        print("available soon")
