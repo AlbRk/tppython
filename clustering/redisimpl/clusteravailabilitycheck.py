@@ -116,6 +116,7 @@ class ClusterAvailabilityCheck(threading.Thread):
                     print(str(self.otherserverstatus))
                     logging.info("Server ID = %s Ordinal = %d on cluster", status['id'], status['ordinal'])
                     self.servers[status['ordinal']] = status
+                    self.check_if_nobody_dies()
 
 
                     #if _status_['id'] == self.server_id :
@@ -128,3 +129,10 @@ class ClusterAvailabilityCheck(threading.Thread):
 
         #for item in self.pubsub.listen():
         #    logging.info("%s", item)
+
+    def check_if_nobody_dies(self):
+        i=0
+        for timestamp in self.otherserverstatus.values():
+            if(timestamp+2*self.presence_interval<time.time()):
+                print(str(i)+" EST MORT CHEFFFFFF")
+            i=i+1
